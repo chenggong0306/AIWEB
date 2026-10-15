@@ -1,0 +1,317 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOFU AI - AI创作平台</title>
+    <link rel="stylesheet" href="ai.css?v=20261015">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 背景星空 -->
+    <canvas id="starfield-bg"></canvas>
+
+    <!-- 左侧边栏 -->
+    <aside class="fofu-sidebar" id="fofuSidebar">
+        <div class="sidebar-logo">
+            <img src="image/ailogo.jpg" alt="FOFU AI" class="sidebar-logo-img">
+        </div>
+        <nav class="sidebar-nav">
+            <button class="sidebar-icon" data-action="search" title="搜索">
+                <img src="image/ai1.png" alt="搜索" class="sidebar-icon-img">
+            </button>
+            <button class="sidebar-icon" data-action="history" title="历史记录">
+                <img src="image/ai3.png" alt="历史记录" class="sidebar-icon-img">
+            </button>
+            <button class="sidebar-icon" data-action="new-chat" title="新建聊天">
+                <img src="image/ai2.png" alt="新建聊天" class="sidebar-icon-img">
+            </button>
+            <button class="sidebar-icon" data-action="publish" title="发布">
+                <img src="image/ai4.png" alt="发布" class="sidebar-icon-img">
+            </button>
+            <button class="sidebar-icon" data-action="settings" title="模型与环境设置" aria-label="模型与环境设置">
+                <i class="fas fa-sliders"></i>
+            </button>
+            <button class="sidebar-icon sidebar-icon-back" data-action="back" title="返回">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- 主内容 -->
+    <main class="main-container">
+        <!-- AI聊天页面 -->
+        <section class="chat-section active" id="chatSection">
+            <div class="workspace-bar">
+                <span class="connection-status" id="connectionStatus" role="status">连接后台中…</span>
+                <button class="workspace-settings" id="openSettingsBtn" type="button">模型与环境设置</button>
+            </div>
+            <div class="chat-container">
+                <!-- 消息列表 -->
+                <div class="chat-messages" id="chatMessages" role="log" aria-label="游戏制作对话">
+                    <!-- 空状态 -->
+                    <div class="chat-empty" id="chatEmpty">
+                        <div class="chat-empty-brand">
+                            <img src="image/logo.png" alt="FOFU" class="chat-empty-logo-img">
+                            <span class="chat-empty-name">FOFU</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 输入区 (Uiverse.io 风格) -->
+                <div class="chat-input-area">
+                    <div class="input">
+                        <svg
+                            class="svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M11.5 6C11.3949 6.00006 11.2925 5.96705 11.2073 5.90565C11.1221 5.84425 11.0583 5.75758 11.0251 5.65792L10.7623 4.86908C10.6623 4.57101 10.4288 4.33629 10.13 4.23693L9.34102 3.97354C9.24166 3.94019 9.1553 3.87649 9.09411 3.79142C9.03292 3.70635 9 3.60421 9 3.49943C9 3.39465 9.03292 3.29252 9.09411 3.20745C9.1553 3.12238 9.24166 3.05867 9.34102 3.02532L10.13 2.76193C10.4282 2.66191 10.663 2.42852 10.7623 2.12979L11.0258 1.34094C11.0591 1.24161 11.1229 1.15526 11.2079 1.09409C11.293 1.03291 11.3952 1 11.5 1C11.6048 1 11.707 1.03291 11.7921 1.09409C11.8771 1.15526 11.9409 1.24161 11.9742 1.34094L12.2377 2.12979C12.2868 2.27697 12.3695 2.4107 12.4792 2.52041C12.589 2.63013 12.7227 2.71281 12.87 2.76193L13.659 3.02532C13.7583 3.05867 13.8447 3.12238 13.9059 3.20745C13.9671 3.29252 14 3.39465 14 3.49943C14 3.60421 13.9671 3.70635 13.9059 3.79142C13.8447 3.87649 13.7583 3.94019 13.659 3.97354L12.87 4.23693C12.5718 4.33696 12.337 4.57034 12.2377 4.86908L11.9742 5.65792C11.9411 5.75747 11.8774 5.84406 11.7923 5.90545C11.7072 5.96684 11.6049 5.99992 11.5 6Z"
+                                fill="currentColor"
+                            ></path>
+                            <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M6 13C5.85133 13.0001 5.7069 12.9504 5.58969 12.859C5.47247 12.7675 5.38921 12.6395 5.35313 12.4952L5.12388 11.5745C4.91418 10.7391 4.26198 10.0868 3.42674 9.87703L2.50619 9.64774C2.36169 9.61194 2.23333 9.52878 2.14159 9.41151C2.04985 9.29425 2 9.14964 2 9.00075C2 8.85185 2.04985 8.70724 2.14159 8.58998C2.23333 8.47272 2.36169 8.38955 2.50619 8.35376L3.42674 8.12446C4.26198 7.91473 4.91418 7.2624 5.12388 6.427L5.35313 5.50629C5.38892 5.36176 5.47207 5.23338 5.58931 5.14162C5.70655 5.04986 5.85113 5 6 5C6.14887 5 6.29345 5.04986 6.41069 5.14162C6.52793 5.23338 6.61108 5.36176 6.64687 5.50629L6.87612 6.427C6.97865 6.83721 7.19071 7.21184 7.48965 7.51082C7.78858 7.80981 8.16313 8.02192 8.57326 8.12446L9.49381 8.35376C9.63831 8.38955 9.76667 8.47272 9.85841 8.58998C9.95015 8.70724 10 8.85185 10 9.00075C10 9.14964 9.95015 9.29425 9.85841 9.41151C9.76667 9.52878 9.63831 9.61194 9.49381 9.64774L8.57326 9.87703C8.16313 9.97957 7.78858 10.1917 7.48965 10.4907C7.19071 10.7897 6.97865 11.1643 6.87612 11.5745L6.64687 12.4952C6.61079 12.6395 6.52753 12.7675 6.41031 12.859C6.2931 12.9504 6.14867 13.0001 6 13Z"
+                                fill="currentColor"
+                            ></path>
+                            <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M13.5005 23C13.3376 23 13.1791 22.9469 13.049 22.8487C12.9189 22.7505 12.8243 22.6127 12.7795 22.456L11.9665 19.61C11.7915 18.9971 11.4631 18.4389 11.0124 17.9882C10.5616 17.5374 10.0035 17.209 9.39054 17.034L6.54454 16.221C6.38795 16.1761 6.25021 16.0815 6.15216 15.9514C6.05411 15.8214 6.00108 15.6629 6.00108 15.5C6.00108 15.3371 6.05411 15.1786 6.15216 15.0486C6.25021 14.9185 6.38795 14.8239 6.54454 14.779L9.39054 13.966C10.0035 13.791 10.5616 13.4626 11.0124 13.0118C11.4631 12.5611 11.7915 12.0029 11.9665 11.39L12.7795 8.544C12.8244 8.38741 12.919 8.24967 13.0491 8.15162C13.1792 8.05357 13.3376 8.00054 13.5005 8.00054C13.6634 8.00054 13.8219 8.05357 13.952 8.15162C14.0821 8.24967 14.1767 8.38741 14.2215 8.544L15.0345 11.39C15.2096 12.0029 15.538 12.5611 15.9887 13.0118C16.4394 13.4626 16.9976 13.791 17.6105 13.966L20.4565 14.779C20.6131 14.8239 20.7509 14.9185 20.8489 15.0486C20.947 15.1786 21 15.3371 21 15.5C21 15.6629 20.947 15.8214 20.8489 15.9514C20.7509 16.0815 20.6131 16.1761 20.4565 16.221L17.6105 17.034C16.9976 17.209 16.4394 17.5374 15.9887 17.9882C15.538 18.4389 15.2096 18.9971 15.0345 19.61L14.2215 22.456C14.1768 22.6127 14.0822 22.7505 13.9521 22.8487C13.822 22.9469 13.6635 23 13.5005 23Z"
+                                fill="currentColor"
+                            ></path>
+                        </svg>
+
+                        <textarea
+                            class="search"
+                            id="chatInput"
+                            rows="1"
+                            placeholder="有什么可以帮到你的？  (Enter 发送 / Shift+Enter 换行)"
+                            autocomplete="off"
+                        ></textarea>
+                        <input
+                            type="file"
+                            id="fileInput"
+                            class="visually-hidden-file"
+                            multiple
+                            accept="image/*,.glb,.gltf,.fbx,.obj,.zip,.png,.jpg,.jpeg,.webp,.gif"
+                        />
+                        <button class="send-btn" id="sendBtn" type="button" aria-label="发送">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M3.4 20.6L21 12L3.4 3.4L3 10L17 12L3 14L3.4 20.6Z"
+                                    fill="currentColor"
+                                ></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <button class="add-btn" id="addBtn" type="button" aria-label="添加素材/图片">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 5C12.2652 5 12.5196 5.10536 12.7071 5.29289C12.8946 5.48043 13 5.73478 13 6V11H18C18.2652 11 18.5196 11.1054 18.7071 11.2929C18.8946 11.4804 19 11.7348 19 12C19 12.2652 18.8946 12.5196 18.7071 12.7071C18.5196 12.8946 18.2652 13 18 13H13V18C13 18.2652 12.8946 18.5196 12.7071 18.7071C12.5196 18.8946 12.2652 19 12 19C11.7348 19 11.4804 18.8946 11.2929 18.7071C11.1054 18.5196 11 18.2652 11 18V13H6C5.73478 13 5.48043 12.8946 5.29289 12.7071C5.10536 12.5196 5 12.2652 5 12C5 11.7348 5.10536 11.4804 5.29289 11.2929C5.48043 11.1054 5.73478 11 6 11H11V6C11 5.73478 11.1054 5.48043 11.2929 5.29289C11.4804 5.10536 11.7348 5 12 5Z"
+                                fill="currentColor"
+                            ></path>
+                        </svg>
+                    </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 右侧预览面板 -->
+        <aside class="preview-panel" id="previewPanel">
+            <!-- 左缘宽度调节把手：可自由左右延展 -->
+            <div class="preview-resize-handle" id="previewResizeHandle" title="拖动调整宽度"></div>
+            <div class="preview-panel-header">
+                <div class="preview-panel-tabs" role="tablist">
+                    <button class="preview-panel-tab active" data-view="app" type="button" role="tab" aria-selected="true">
+                        <i class="fas fa-mobile"></i>
+                        <span>APP</span>
+                    </button>
+                    <button class="preview-panel-tab" data-view="pc" type="button" role="tab" aria-selected="false">
+                        <i class="fas fa-desktop"></i>
+                        <span>PC</span>
+                    </button>
+                    <button class="preview-panel-tab" data-view="code" type="button" role="tab" aria-selected="false">
+                        <i class="fas fa-code"></i>
+                        <span>代码</span>
+                    </button>
+                </div>
+                <select class="build-select" id="buildSelect" aria-label="选择游戏构建版本" hidden></select>
+            </div>
+            <div class="preview-panel-body">
+                <!-- APP 视图 -->
+                <div class="preview-view preview-view-app active" data-view="app">
+                    <div class="card">
+                        <div class="btn1"></div>
+                        <div class="btn2"></div>
+                        <div class="btn3"></div>
+                        <div class="btn4"></div>
+                        <div class="card-int">
+                            <iframe class="game-iframe"
+                                    src="about:blank"
+                                    title="FOFU 游戏预览"
+                                    allow="fullscreen; autoplay"
+                                    allowfullscreen
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer" hidden></iframe>
+                            <div class="preview-empty"><i class="fas fa-gamepad"></i><p>完成 Unity 构建后在这里试玩</p></div>
+                        </div>
+                        <div class="top">
+                            <div class="camera">
+                                <div class="int"></div>
+                            </div>
+                            <div class="speaker"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- PC 视图 -->
+                <div class="preview-view preview-view-pc" data-view="pc">
+                    <div class="pc-mockup">
+                        <div class="pc-browser-tabs">
+                            <div class="pc-browser-tab active">
+                                <i class="fas fa-gamepad"></i>
+                                <span>FOFU · 游戏预览</span>
+                                <i class="fas fa-xmark"></i>
+                            </div>
+                        </div>
+                        <div class="pc-browser-bar">
+                            <span class="pc-dot pc-dot-r"></span>
+                            <span class="pc-dot pc-dot-y"></span>
+                            <span class="pc-dot pc-dot-g"></span>
+                            <div class="pc-url">
+                                <i class="fas fa-lock"></i>
+                                <span id="previewUrlLabel">等待游戏构建</span>
+                            </div>
+                            <i class="fas fa-rotate-right pc-bar-action"></i>
+                        </div>
+                        <div class="pc-screen">
+                            <iframe class="pc-iframe"
+                                    src="about:blank"
+                                    title="FOFU PC 预览"
+                                    allow="fullscreen; autoplay"
+                                    allowfullscreen
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer" hidden></iframe>
+                            <div class="preview-empty"><i class="fas fa-gamepad"></i><p>完成 Unity 构建后在这里试玩</p></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 代码视图 -->
+                <div class="preview-view preview-view-code" data-view="code">
+                    <div class="code-editor">
+                        <div class="code-titlebar">
+                            <i class="fas fa-code"></i>
+                            <span class="code-title">工程文件 — FOFU Studio</span>
+                            <span class="code-titlebar-spacer"></span>
+                            <button class="code-copy-btn" id="codeCopyBtn" type="button" aria-label="复制代码">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="code-filetabs"><div class="code-filetab active"><i class="fas fa-file-code"></i><span class="code-filename">请选择工程文件</span></div></div>
+                        <div class="code-body">
+                            <div class="code-sidebar">
+                                <div class="code-tree" id="projectFiles"><div class="file-empty">创建作品后查看文件</div></div>
+                            </div>
+                            <pre class="code-content" id="codeContentWrap"><code id="codeContent">这里展示智能体实际制作的 Unity 工程文件。请从左侧选择文件。</code></pre>
+                        </div>
+                        <div class="code-statusbar">
+                            <span class="status-item"><i class="fas fa-folder-open"></i> 本地源码</span>
+                            <span class="status-spacer"></span>
+                            <span class="status-item">UTF-8</span>
+                            <span class="status-item">只读</span>
+                            <span class="status-item status-live">● 工程文件</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- 收起按钮（位于面板左缘外，固定可见） -->
+        <button class="preview-panel-toggle" id="previewToggle" type="button" aria-label="收起预览面板">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </main>
+
+    <!-- 历史记录 / 搜索弹窗（票据风格 · Uiverse.io by dexter-st） -->
+    <div class="modal-overlay" id="historyModal" role="dialog" aria-modal="true">
+        <div class="glass-modal history-modal ticket">
+            <!-- 装饰 logo 水印（替代原音符） -->
+            <div class="notes"><img src="image/logo_dark.png" alt="FOFU"></div>
+            <div class="notes"><img src="image/logo_dark.png" alt="FOFU"></div>
+            <div class="notes"><img src="image/logo_dark.png" alt="FOFU"></div>
+
+            <!-- 票头 -->
+            <div class="ticket-header">
+                历史记录
+            </div>
+
+            <!-- 票身：搜索 + 可撕下的下半部分 -->
+            <div class="ticket-body">
+                <div class="history-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="historySearch" placeholder="搜索历史对话…" autocomplete="off">
+                </div>
+                <!-- 虚线以下可撕下的部分：列表 + 票尾 + 剪刀 + 撕票反馈 -->
+                <div class="ticket-lower" id="ticketLower">
+                    <div class="symbol">✁</div>
+                    <div class="cut-highlight" id="cutHighlight"></div>
+                    <div class="rip-hint" id="ripHint">作品和聊天保存在本机后台</div>
+                    <p class="history-notice" id="historyNotice" hidden></p>
+                    <div class="history-list" id="historyList"></div>
+                    <div class="history-empty" id="historyEmpty">
+                        <i class="fas fa-inbox"></i>
+                        <p>暂无历史记录</p>
+                    </div>
+                    <div class="ticket-footer">
+                        <div class="number">共 <span class="bold" id="historyCount">0</span> 条记录</div>
+                        <button class="history-clear" id="clearHistoryBtn" type="button">清空记录</button>
+                        <div class="barcode"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 关闭按钮 -->
+            <button class="ticket-close" id="historyModalClose" type="button" aria-label="关闭">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- 背景 + 全息滤镜 -->
+            <div class="bg holographic"></div>
+            <svg class="filter">
+                <filter id="bump">
+                    <feTurbulence result="noise" numOctaves="3" baseFrequency="0.7" type="fractalNoise"></feTurbulence>
+                    <feSpecularLighting in="noise" result="specular" lighting-color="#fffffc" specularExponent="25" specularConstant="0.8" surfaceScale="0.15">
+                        <fePointLight z="210" y="100" x="100"></fePointLight>
+                    </feSpecularLighting>
+                    <feComposite result="noise2" operator="in" in="specular" in2="SourceGraphic"></feComposite>
+                    <feBlend mode="screen" in2="noise2" in="SourceGraphic"></feBlend>
+                </filter>
+            </svg>
+        </div>
+    </div>
+
+    <dialog class="settings-dialog" id="settingsDialog" aria-labelledby="settingsTitle">
+        <div class="settings-heading"><div><h2 id="settingsTitle">模型与环境设置</h2><p>由 DSH 调用模型，Unity 制作游戏</p></div><button class="settings-close" id="closeSettingsBtn" type="button" aria-label="关闭设置">×</button></div>
+        <form id="settingsForm" autocomplete="off">
+            <label for="modelInput">DeepSeek 模型</label>
+            <input id="modelInput" name="model" value="deepseek-v4-flash" required spellcheck="false">
+            <label for="baseUrlInput">API 地址</label>
+            <input id="baseUrlInput" name="base_url" type="url" value="https://api.deepseek.com" required spellcheck="false">
+            <label for="apiKeyInput">API Key <span id="apiKeyState"></span></label>
+            <input id="apiKeyInput" name="api_key" type="password" placeholder="填写 DeepSeek API Key" autocomplete="new-password" spellcheck="false">
+            <p class="settings-help">密钥仅交给本机后端使用，不保存在浏览器。留空会保留已有密钥。</p>
+            <div class="settings-actions"><span id="settingsFeedback" role="status"></span><button class="primary-button" id="saveSettingsBtn" type="submit">保存配置</button></div>
+        </form>
+        <div class="environment-heading"><h3>制作环境</h3><button id="refreshEnvironmentBtn" type="button">重新检测</button></div>
+        <div id="environmentStatus" class="environment-status" aria-live="polite">正在检测…</div>
+    </dialog>
+    <div class="workspace-toast" id="workspaceToast" role="status" hidden></div>
+    <script src="client-api.js?v=20261015"></script>
+    <script src="ai.js?v=20261015"></script>
+</body>
+</html>

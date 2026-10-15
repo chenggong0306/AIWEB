@@ -1,0 +1,27 @@
+# uv environment, DSH runtime state, credentials and user game projects
+backend/.venv/
+backend/.dsh/
+backend/data/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.playwright-mcp/
+.env
+.env.*
+!.env.example
+*.log
+*.sqlite
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+# Local editor/OS state
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+# Unity generated caches (source and assets should be versioned separately)
+Library/
+Temp/
+Logs/
+obj/
+.vs/
